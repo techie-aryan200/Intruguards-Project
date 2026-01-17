@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntruGuards | AI Intrusion Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+        let db;
+        let auth;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'intruguards-ids';
+
+        const firebaseConfig = window.__firebase_config ? JSON.parse(window.__firebase_config) : {
+            apiKey: "",
+            authDomain: "placeholder.firebaseapp.com",
+            projectId: "placeholder",
+            storageBucket: "placeholder.appspot.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        async function init() {
+            try {
+                await signInAnonymously(auth);
+                setupListeners();
+            } catch (e) {
+                // startSimulation(); 
+            }
+        }
+
+        function setupListeners() {
+            console.log("System listening for unauthorized movements...");
+        }
+
+        window.triggerAlert = function() {
+            const banner = document.getElementById('global-alert');
+            const pulse = document.getElementById('alert-pulse');
+            if(!banner || !pulse) return;
+            banner.classList.remove('hidden');
+            pulse.classList.add('alert-active');
+            
+            setTimeout(() => {
+                banner.classList.add('hidden');
+                pulse.classList.remove('alert-active');
+            }, 4000);
+        };
+
+        init();
+    </script>
+
+    <style>
+        body { 
+            background: #000000; 
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        
+        .team-highlight {
+            color: #facc15;
+            text-shadow: 0 0 15px rgba(250, 204, 21, 0.6);
+            animation: text-pulse 2s infinite alternate;
+        }
+
+        @keyframes text-pulse {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2); }
+        }
+
+        .tech-grid {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glass {
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+        }
+
+        .alert-active {
+            animation: alert-flash 1s infinite alternate;
+        }
+
+        @keyframes alert-flash {
+            from { background-color: rgba(0,0,0,1); }
+            to { background-color: rgba(220, 38, 38, 0.2); }
+        }
+
+        .blueprint-img {
+            filter: grayscale(100%) brightness(0.8) contrast(1.2);
+            transition: all 0.5s ease;
+        }
+        .blueprint-img:hover {
+            filter: grayscale(0%) brightness(1) contrast(1);
+        }
+
+        /* Flow Chart Connector Animations */
+        .flow-connector {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100%;
+            height: 4px;
+            background: #333;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .flow-pulse {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 20%;
+            background: #facc15;
+            box-shadow: 0 0 10px #facc15;
+            animation: flowMove 2s infinite linear;
+        }
+        @keyframes flowMove {
+            0% { left: -20%; }
+            100% { left: 100%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div class="tech-grid"></div>
+
+    <!-- Alert Bar -->
+    <div id="global-alert" class="hidden fixed top-0 inset-x-0 z-[100] bg-red-600 text-white font-black py-3 text-center orbitron tracking-widest text-sm uppercase">
+        <i class="fas fa-biohazard mr-2"></i> CRITICAL BREACH DETECTED <i class="fas fa-biohazard ml-2"></i>
+    </div>
+
+    <!-- Header Navigation -->
+    <nav class="sticky top-0 z-50 bg-black border-b-2 border-orange-600 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-6">
+            <div class="bg-yellow-400 p-3 shadow-[4px_4px_0px_#f97316]">
+                <i class="fas fa-eye text-black text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="orbitron text-3xl font-black tracking-tighter team-highlight italic">INTRUGUARDS</h1>
+                <p class="text-[10px] uppercase tracking-[0.3em] text-green-400 font-black">Vigilant Intelligence, Uncompromising Security.</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="https://github.com/themadcoder23/AI-driven-Intrusion-Detection-system" target="_blank" class="flex items-center gap-2 bg-yellow-400 text-black px-4 py-2 font-black text-xs hover:bg-orange-500 hover:text-white transition-all">
+                <i class="fab fa-github text-lg"></i>
+                <span>SOURCE</span>
+            </a>
+            <span class="text-sm font-black font-mono bg-white text-black px-3 py-1" id="clock">00:00:00</span>
+        </div>
+    </nav>
+
+    <main id="alert-pulse" class="relative z-10 flex-1 p-6 space-y-12">
+        
+        <!-- Expanded Project Blueprint -->
+        <section class="glass p-8 border-t-4 border-yellow-400 shadow-2xl">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                <div class="lg:col-span-3">
+                    <h2 class="orbitron text-2xl font-black text-green-400 mb-4 underline decoration-orange-600 underline-offset-8 uppercase">Project Architecture</h2>
+                    <p class="text-lg text-white font-black leading-snug">
+                        AI-Driven Perimeter Defense: A neural network ecosystem engineered to monitor and secure high-value restricted perimeters.
+                    </p>
+                    <div class="mt-6 space-y-4">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&auto=format&fit=crop" class="blueprint-img rounded border-2 border-orange-500/50 shadow-lg" alt="Hardware Setup">
+                        <p class="text-[10px] text-green-400 italic uppercase">Neural Processing Unit v4.0</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <h4 class="text-green-400 text-xl font-black flex items-center gap-3"><i class="fas fa-brain text-orange-500"></i> DEEP LEARNING ANALYSIS</h4>
+                        <p class="text-sm text-slate-300 font-bold leading-relaxed">
+                            Integrates custom-trained YOLO/SSD variants for human detection. The system analyzes posture and movement velocity to distinguish between standard personnel and unauthorized intruders within a 3D coordinate mapping plane.
+                        </p>
+                        <img src="https://images.unsplash.com/photo-1507146426996-ef05306b995a?q=80&w=600&auto=format&fit=crop" class="blueprint-img rounded h-32 w-full object-cover border border-white/10" alt="AI Logic">
+                    </div>
+                    <div class="space-y-3">
+                        <h4 class="text-green-400 text-xl font-black flex items-center gap-3"><i class="fas fa-database text-orange-500"></i> FIREBASE CLOUD SYNC</h4>
+                        <p class="text-sm text-slate-300 font-bold leading-relaxed">
+                            Every detection is instantly logged to Firebase. This enables real-time mobile alerts, persistent event history with cloud-stored imagery, and administrative control over security protocols from any authenticated device.
+                        </p>
+                    </div>
+                    <div class="space-y-3">
+                        <h4 class="text-green-400 text-xl font-black flex items-center gap-3"><i class="fas fa-bell text-orange-500"></i> ACTIVE INTERVENTION</h4>
+                        <p class="text-sm text-slate-300 font-bold leading-relaxed">
+                            Beyond simple logging, the system can trigger secondary deterrents. Upon intrusion detection, IntruGuards communicates with IoT controllers to active strobe lights, physical lockdowns, and localized sirens.
+                        </p>
+                    </div>
+                    <div class="space-y-3">
+                        <h4 class="text-green-400 text-xl font-black flex items-center gap-3"><i class="fas fa-shield-alt text-orange-500"></i> ADAPTIVE PERIMETERS</h4>
+                        <p class="text-sm text-slate-300 font-bold leading-relaxed">
+                            Security teams can define complex restricted zones via the interface. The AI ignores movement in 'green zones' while strictly enforcing security in 'red zones', significantly reducing false positive triggers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYSTEM LOGIC FLOW (Simplified Visual) -->
+        <section class="max-w-[1600px] mx-auto py-8">
+            <div class="flex items-center gap-4 mb-8">
+                <h3 class="orbitron text-3xl font-black text-white uppercase italic">System Logic Flow</h3>
+                <div class="h-1 flex-1 bg-white/20"></div>
+                <span class="text-xs text-green-400 font-bold uppercase tracking-widest">End-To-End Process</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+                
+                <!-- Step 1: Input -->
+                <div class="relative group z-10">
+                    <div class="glass p-8 border-b-8 border-yellow-400 hover:bg-white/5 transition-all h-full">
+                        <div class="bg-yellow-400/20 w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(250,204,21,0.3)]">
+                            <i class="fas fa-video text-yellow-400 text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">1. MONITOR</h4>
+                        <p class="text-sm text-green-400 leading-relaxed font-bold">
+                            Surveillance cameras capture live video feeds of the restricted area. The system scans the environment frame-by-frame in real-time.
+                        </p>
+                    </div>
+                    <!-- Connector Line (Desktop Only) -->
+                    <div class="hidden md:block flow-connector">
+                        <div class="flow-pulse"></div>
+                    </div>
+                    <!-- Mobile Arrow -->
+                    <div class="block md:hidden absolute left-1/2 -bottom-6 -translate-x-1/2 text-slate-600 text-xl">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+
+                <!-- Step 2: Processing -->
+                <div class="relative group z-10">
+                    <div class="glass p-8 border-b-8 border-orange-500 hover:bg-white/5 transition-all h-full">
+                        <div class="bg-orange-500/20 w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+                            <i class="fas fa-microchip text-orange-500 text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">2. ANALYZE</h4>
+                        <p class="text-sm text-green-400 leading-relaxed font-bold">
+                            The Neural Core (AI) processes the footage. It instantly differentiates between authorized personnel, background noise, and intruders.
+                        </p>
+                    </div>
+                    <!-- Connector Line -->
+                    <div class="hidden md:block flow-connector">
+                        <div class="flow-pulse" style="animation-delay: 0.5s"></div>
+                    </div>
+                    <!-- Mobile Arrow -->
+                    <div class="block md:hidden absolute left-1/2 -bottom-6 -translate-x-1/2 text-slate-600 text-xl">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+
+                <!-- Step 3: Storage -->
+                <div class="relative group z-10">
+                    <div class="glass p-8 border-b-8 border-red-500 hover:bg-white/5 transition-all h-full">
+                        <div class="bg-red-500/20 w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(239,68,68,0.3)]">
+                            <i class="fas fa-cloud-upload-alt text-red-500 text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">3. SYNC</h4>
+                        <p class="text-sm text-green-400 leading-relaxed font-bold">
+                            Upon detection, event data and image snapshots are securely uploaded to the Firebase Cloud database for permanent record keeping.
+                        </p>
+                    </div>
+                    <!-- Connector Line -->
+                    <div class="hidden md:block flow-connector">
+                        <div class="flow-pulse" style="animation-delay: 1s"></div>
+                    </div>
+                    <!-- Mobile Arrow -->
+                    <div class="block md:hidden absolute left-1/2 -bottom-6 -translate-x-1/2 text-slate-600 text-xl">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+
+                <!-- Step 4: Output -->
+                <div class="relative group z-10">
+                    <div class="glass p-8 border-b-8 border-green-500 hover:bg-white/5 transition-all h-full">
+                        <div class="bg-green-500/20 w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                            <i class="fas fa-bell text-green-500 text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">4. ALERT</h4>
+                        <p class="text-sm text-green-400 leading-relaxed font-bold">
+                            The system triggers immediate alarms: sirens blare on-site, and notifications are pushed to security team mobile devices.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Footer (Cleaned) -->
+    <footer class="mt-auto bg-white text-black p-4 border-t-2 border-orange-600 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
+        <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center gap-6">
+                <div>
+                    <span class="text-orange-600 font-black orbitron text-xl">INTRUGUARDS</span>
+                    <span class="ml-2 opacity-50 font-bold text-[10px] tracking-tighter uppercase">// AI DEFENSE OPS</span>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 mt-4 md:mt-0">
+                <button onclick="triggerAlert()" class="bg-black text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-colors shadow-[2px_2px_0px_#f97316]">
+                    Deploy Siren
+                </button>
+                <div class="flex items-center gap-4 border-l border-black/20 pl-4">
+                    <a href="https://github.com/themadcoder23/AI-driven-Intrusion-Detection-system" target="_blank" class="text-[10px] font-black hover:text-orange-600 flex items-center gap-2">
+                        <i class="fab fa-github"></i> GITHUB_PORTAL
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            const elClock = document.getElementById('clock');
+            if(elClock) elClock.innerText = now.toLocaleTimeString('en-US', { hour12: false });
+        }, 1000);
+    </script>
+</body>
+</html>
